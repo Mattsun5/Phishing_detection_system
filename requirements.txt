@@ -1,7 +1,7 @@
-pandas
 numpy
 flask
 nltk
 pandas
 scikit-learn
 joblib
+gunicorn
