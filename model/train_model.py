@@ -2,6 +2,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix, classification_report
+import json
 import joblib
 
 df = pd.read_csv("data/emails.csv")
@@ -23,3 +25,22 @@ joblib.dump(model, "model.pkl")
 joblib.dump(vectorizer, "vectorizer.pkl")
 
 print("Training complete")
+
+# Predict on test set
+y_pred = model.predict(X_test)
+
+# Confusion matrix
+tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
+
+metrics = {
+    "TP": int(tp),
+    "FP": int(fp),
+    "FN": int(fn),
+    "TN": int(tn)
+}
+
+# Save metrics for Flask
+with open("metrics.json", "w") as f:
+    json.dump(metrics, f)
+
+print("Metrics saved:", metrics)

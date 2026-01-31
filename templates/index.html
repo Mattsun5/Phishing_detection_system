@@ -18,16 +18,57 @@
 <canvas id="chart"></canvas>
 
 <script>
+ const cm = {{ metrics | tojson }};
+
+// Metric formulas
+function compute(m){
+  const acc=(m.TP+m.TN)/(m.TP+m.TN+m.FP+m.FN);
+  const prec=m.TP/(m.TP+m.FP);
+  const rec=m.TP/(m.TP+m.FN);
+  const f1=2*(prec*rec)/(prec+rec);
+
+  return {
+    acc: acc*100,
+    prec: prec*100,
+    rec: rec*100,
+    f1: f1*100
+  };
+}
+
+const r=compute(cm);
+
+// ================= Radar Chart =================
 new Chart(document.getElementById("chart"), {
- type:"bar",
+ type:"radar",
  data:{
- labels:["Naive Bayes","SVM","Random Forest"],
- datasets:[{
-  label:"Accuracy",
-  data:[91.8,95.4,97.2]
- }]
+  labels:["Accuracy","Precision","Recall","F1"],
+  datasets:[{
+    label:"Model Performance",
+    data:[r.acc,r.prec,r.rec,r.f1]
+  }]
+ },
+ options:{
+  scales:{ r:{ min:0,max:100 } }
  }
 });
+
+// ================= Table =================
+const table=`
+<table border="1" style="margin-top:20px">
+<tr>
+<th>Accuracy</th><th>Precision</th>
+<th>Recall</th><th>F1</th>
+</tr>
+<tr>
+<td>${r.acc.toFixed(2)}%</td>
+<td>${r.prec.toFixed(2)}%</td>
+<td>${r.rec.toFixed(2)}%</td>
+<td>${r.f1.toFixed(2)}%</td>
+</tr>
+</table>
+`;
+
+document.body.insertAdjacentHTML("beforeend",table);
 </script>
 
 </body>
