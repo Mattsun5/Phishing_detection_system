@@ -31,6 +31,10 @@
 
 <script>
 
+/* ===== LOAD DATA FROM FLASK ===== */
+const metrics = JSON.parse('{{ metrics | safe }}');
+const confusion = JSON.parse('{{ confusion | safe }}');
+
   // ===== METRICS BAR CHART =====
 new Chart(document.getElementById("metricChart"), {
     type: "bar",
