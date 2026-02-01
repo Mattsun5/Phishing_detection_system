@@ -32,8 +32,8 @@
 <script>
 
 /* ===== LOAD DATA FROM FLASK ===== */
-const metrics = JSON.parse('{{ metrics | safe }}');
-const confusion = JSON.parse('{{ confusion | safe }}');
+// const metrics = JSON.parse('{{ metrics | safe }}');
+// const confusion = JSON.parse('{{ confusion | safe }}');
 
   // ===== METRICS BAR CHART =====
 new Chart(document.getElementById("metricChart"), {
@@ -41,10 +41,10 @@ new Chart(document.getElementById("metricChart"), {
     data: {
         labels: ["Naive Bayes", "SVM", "Random Forest"],
         datasets: [
-            { label: "Accuracy", data: {{ metrics.accuracy | safe }} },
-            { label: "Precision", data: {{ metrics.precision | safe }} },
-            { label: "Recall", data: {{ metrics.recall | safe }} },
-            { label: "F1-Score", data: {{ metrics.f1 | safe }} }
+            { label: "Accuracy", data: {{ metrics.accuracy | tojson }} },
+            { label: "Precision", data: {{ metrics.precision | tojson }} },
+            { label: "Recall", data: {{ metrics.recall | tojson }} },
+            { label: "F1-Score", data: {{ metrics.f1 | tojson }} }
         ]
     },
     options: {
