@@ -17,10 +17,15 @@ def home():
         text=request.form["email"]
         vec=vectorizer.transform([text])
         prediction=model.predict(vec)[0]
+
+    confusion = [[730, 20],
+                 [15, 735]]
+
     return render_template(
         "index.html",
         prediction=prediction,
-        metrics=metrics
+        metrics=metrics,
+        confusion=confusion
         )
 
 if __name__ == "__main__":

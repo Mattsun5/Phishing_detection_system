@@ -1,74 +1,141 @@
 <html>
 <head>
+  <title>Phishing Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
-<h2>Phishing Detector</h2>
+<h2>Phishing Detector System</h2>
 
 <form method="POST">
-<textarea name="email"></textarea>
-<button type="submit">Check</button>
+<textarea name="email" placeholder="Paste email content here..."></textarea>
+    <button type="submit">Check Email</button>
 </form>
 
 {% if prediction %}
-<h3>Result: {{prediction}}</h3>
+<div class="result">Prediction Result: {{ prediction }}</div>
 {% endif %}
+
+<!-- Accuracy / Precision / Recall / F1 Chart -->
+<div class="chart-box">
+<canvas id="metricChart"></canvas>
+</div>
+
+<!-- Confusion Matrix Heatmap -->
+<div class="chart-box">
+<canvas id="confusionChart"></canvas>
+</div>
 
 <canvas id="chart"></canvas>
 
 <script>
- const cm = {{ metrics | tojson }};
 
-// Metric formulas
-function compute(m){
-  const acc=(m.TP+m.TN)/(m.TP+m.TN+m.FP+m.FN);
-  const prec=m.TP/(m.TP+m.FP);
-  const rec=m.TP/(m.TP+m.FN);
-  const f1=2*(prec*rec)/(prec+rec);
-
-  return {
-    acc: acc*100,
-    prec: prec*100,
-    rec: rec*100,
-    f1: f1*100
-  };
-}
-
-const r=compute(cm);
-
-// ================= Radar Chart =================
-new Chart(document.getElementById("chart"), {
- type:"radar",
- data:{
-  labels:["Accuracy","Precision","Recall","F1"],
-  datasets:[{
-    label:"Model Performance",
-    data:[r.acc,r.prec,r.rec,r.f1]
-  }]
- },
- options:{
-  scales:{ r:{ min:0,max:100 } }
- }
+  // ===== METRICS BAR CHART =====
+new Chart(document.getElementById("metricChart"), {
+    type: "bar",
+    data: {
+        labels: ["Naive Bayes", "SVM", "Random Forest"],
+        datasets: [
+            { label: "Accuracy", data: {{ metrics.accuracy | safe }} },
+            { label: "Precision", data: {{ metrics.precision | safe }} },
+            { label: "Recall", data: {{ metrics.recall | safe }} },
+            { label: "F1-Score", data: {{ metrics.f1 | safe }} }
+        ]
+    },
+    options: {
+        plugins: {
+            title: {
+                display: true,
+                text: "Model Performance Comparison"
+            }
+        }
+    }
 });
 
-// ================= Table =================
-const table=`
-<table border="1" style="margin-top:20px">
-<tr>
-<th>Accuracy</th><th>Precision</th>
-<th>Recall</th><th>F1</th>
-</tr>
-<tr>
-<td>${r.acc.toFixed(2)}%</td>
-<td>${r.prec.toFixed(2)}%</td>
-<td>${r.rec.toFixed(2)}%</td>
-<td>${r.f1.toFixed(2)}%</td>
-</tr>
-</table>
-`;
+// ===== CONFUSION MATRIX HEATMAP =====
+new Chart(document.getElementById("confusionChart"), {
+    type: "matrix",
+    data: {
+        datasets: [{
+            data: [
+                {x: 0, y: 1, v: {{ confusion[0][0] }}},
+                {x: 1, y: 1, v: {{ confusion[0][1] }}},
+                {x: 0, y: 0, v: {{ confusion[1][0] }}},
+                {x: 1, y: 0, v: {{ confusion[1][1] }}}
+            ],
+            backgroundColor(ctx) {
+                const value = ctx.dataset.data[ctx.dataIndex].v;
+                return `rgba(31,119,180,${value / 800})`;
+            },
+            width: 60,
+            height: 60
+        }]
+    },
+    options: {
+        plugins: {
+            title: {
+                display: true,
+                text: "Confusion Matrix Heatmap"
+            }
+        },
+        scales: {
+            x: { ticks: { callback: v => v === 0 ? "Legit" : "Phish" }},
+            y: { ticks: { callback: v => v === 0 ? "Phish" : "Legit" }}
+        }
+    }
+});
+//  const cm = {{ metrics | tojson }};
 
-document.body.insertAdjacentHTML("beforeend",table);
+// // Metric formulas
+// function compute(m){
+//   const acc=(m.TP+m.TN)/(m.TP+m.TN+m.FP+m.FN);
+//   const prec=m.TP/(m.TP+m.FP);
+//   const rec=m.TP/(m.TP+m.FN);
+//   const f1=2*(prec*rec)/(prec+rec);
+
+//   return {
+//     acc: acc*100,
+//     prec: prec*100,
+//     rec: rec*100,
+//     f1: f1*100
+//   };
+// }
+
+// const r=compute(cm);
+
+// // ================= Radar Chart =================
+// new Chart(document.getElementById("chart"), {
+//  type:"radar",
+//  data:{
+//   labels:["Accuracy","Precision","Recall","F1"],
+//   datasets:[{
+//     label:"Model Performance",
+//     data:[r.acc,r.prec,r.rec,r.f1]
+//   }]
+//  },
+//  options:{
+//   scales:{ r:{ min:0,max:100 } }
+//  }
+// });
+
+// // ================= Table =================
+// const table=`
+// <table border="1" style="margin-top:20px">
+// <tr>
+// <th>Accuracy</th><th>Precision</th>
+// <th>Recall</th><th>F1</th>
+// </tr>
+// <tr>
+// <td>${r.acc.toFixed(2)}%</td>
+// <td>${r.prec.toFixed(2)}%</td>
+// <td>${r.rec.toFixed(2)}%</td>
+// <td>${r.f1.toFixed(2)}%</td>
+// </tr>
+// </table>
+// `;
+
+// document.body.insertAdjacentHTML("beforeend",table);
 </script>
 
 </body>
