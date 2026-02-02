@@ -18,6 +18,23 @@
 <div class="result">Prediction Result: {{ prediction }}</div>
 {% endif %}
 
+<!-- Model performance Evaluation Table -->
+ <h3>Model Performance Evaluation Table</h3>
+
+<table id="metricsTable" class="metrics-table">
+    <thead>
+        <tr>
+            <th>Model</th>
+            <th>Accuracy</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1-Score</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Rows will be injected by JavaScript -->
+    </tbody>
+</table>
 <!-- Accuracy / Precision / Recall / F1 Chart -->
 <div class="chart-box">
 <canvas id="metricChart"></canvas>
@@ -128,6 +145,23 @@ new Chart(document.getElementById("confusionChart"), {
             }
         }
     }
+});
+
+const modelNames = ["Naive Bayes", "SVM", "Random Forest"];
+const tableBody = document.querySelector("#metricsTable tbody");
+
+modelNames.forEach((model, index) => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td>${model}</td>
+        <td>${metrics.accuracy[index]}</td>
+        <td>${metrics.precision[index]}</td>
+        <td>${metrics.recall[index]}</td>
+        <td>${metrics.f1[index]}</td>
+    `;
+
+    tableBody.appendChild(row);
 });
 //  const cm = {{ metrics | tojson }};
 

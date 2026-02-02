@@ -32,6 +32,32 @@ button {
     font-size: 18px;
     font-weight: bold;
 }
+.metrics-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 15px;
+}
+
+.metrics-table th,
+.metrics-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.metrics-table th {
+    background-color: #f4f6f8;
+    font-weight: bold;
+}
+
+.metrics-table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.metrics-table tr:hover {
+    background-color: #eef3f7;
+}
 
 .chart-box {
     margin-top: 30px;
