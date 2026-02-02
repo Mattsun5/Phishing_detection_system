@@ -131,7 +131,7 @@ new Chart(document.getElementById("confusionChart"), {
                 max: 1.5,
                 ticks: { 
                     stepSize: 1,
-                    callback: v => v === 0 ? "Legitimate" : "Phishing"
+                    callback: v => v === 0 ? "Phishing" : "Legitimate"
                 }
             },
             y: {
