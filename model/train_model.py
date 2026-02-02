@@ -61,7 +61,7 @@ for name, model in models.items():
     y_pred = model.predict(X_test)
 
     # Define which string label is the "positive" one (the one you are trying to detect)
-    target_label = "phishing"
+    target_label = "legitimate"
     
     # Calculate Metrics (rounded for cleaner JSON)
     results["accuracy"].append(round(accuracy_score(y_test, y_pred), 3))
