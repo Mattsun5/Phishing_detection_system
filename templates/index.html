@@ -155,10 +155,10 @@ modelNames.forEach((model, index) => {
 
     row.innerHTML = `
         <td>${model}</td>
-        <td>${metrics.accuracy[index]}</td>
-        <td>${metrics.precision[index]}</td>
-        <td>${metrics.recall[index]}</td>
-        <td>${metrics.f1[index]}</td>
+        <td>${metrics.accuracy[index] * 100}%</td>
+        <td>${metrics.precision[index] * 100}%</td>
+        <td>${metrics.recall[index] * 100}%</td>
+        <td>${metrics.f1[index] * 100}%</td>
     `;
 
     tableBody.appendChild(row);
